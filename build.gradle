@@ -1,0 +1,68 @@
+plugins {
+    id 'groovy'
+    id 'idea'
+    id 'maven-publish'
+    id 'com.github.hierynomus.license' version '0.11.0'
+}
+
+group = 'net.minecrell'
+version = '1.0-SNAPSHOT'
+
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'forge'
+        url = 'http://files.minecraftforge.net/maven'
+    }
+    maven {
+        name = 'sonatype-snapshots'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+}
+
+license {
+    header file('LICENSE')
+    exclude '**/*.txt'
+    exclude '**/*.json'
+    exclude '**/*.properties'
+    ignoreFailures false
+    strictCheck true
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+
+            repositories {
+                maven {
+                    url = System.getenv('REPO_' + (version.endsWith('-SNAPSHOT') ? 'SNAPSHOTS' : 'RELEASES')) ?: "$buildDir/repo"
+                }
+            }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}

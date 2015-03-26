@@ -68,17 +68,17 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
 
     @Override
     String getApiName() {
-        'minecraft'
+        'minecraft_merged'
     }
 
     @Override
     protected String getSrcDepName() {
-        'minecraft_src'
+        'minecraft_merged_src'
     }
 
     @Override
     protected String getBinDepName() {
-        'minecraft_bin'
+        'minecraft_merged_bin'
     }
 
     @Override

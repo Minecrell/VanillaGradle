@@ -180,7 +180,7 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
     protected DelayedFile getDevJson() {
         new LoadingDelayedFile(this, "$CACHE_DIR/unpacked/dev.json", { File file ->
             if (file.exists()) {
-                def i = VanillaGradle.getResourceAsStream("/versions/$project.minecraft.version")
+                def i = VanillaGradle.getResourceAsStream("/versions/${project.minecraft.version}.json")
                 if (i != null) {
                     i.withStream {
                         file.withOutputStream { o ->

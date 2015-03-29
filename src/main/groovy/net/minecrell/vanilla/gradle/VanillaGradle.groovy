@@ -141,12 +141,12 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
 
     @Override
     protected String getSrcDepName() {
-        'minecraft_merged_src'
+        "minecraft_${project.name}_src"
     }
 
     @Override
     protected String getBinDepName() {
-        'minecraft_merged_bin'
+        "minecraft_${project.name}_bin"
     }
 
     @Override

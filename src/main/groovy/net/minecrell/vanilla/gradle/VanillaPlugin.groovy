@@ -22,16 +22,42 @@
  */
 package net.minecrell.vanilla.gradle
 
-import net.minecraftforge.gradle.user.UserBasePlugin
-import net.minecraftforge.gradle.user.UserExtension
+class VanillaPlugin extends AbstractVanillaPlugin<VanillaExtension> {
 
-class VanillaExtension extends UserExtension {
+    @Override
+    protected Class<VanillaExtension> getExtensionClass() {
+        VanillaExtension
+    }
 
-    String clientTweaker = ''
-    String serverTweaker = ''
+    @Override
+    protected String getClientTweaker() {
+        extension.clientTweaker
+    }
 
-    VanillaExtension(UserBasePlugin<? extends UserExtension> plugin) {
-        super(plugin)
+    @Override
+    protected String getServerTweaker() {
+        extension.serverTweaker
+    }
+
+    @Override
+    protected String getClientRunClass() {
+        'net.minecraft.launchwrapper.Launch'
+    }
+
+    @Override
+    protected String getServerRunClass() {
+        'net.minecraft.launchwrapper.Launch'
+    }
+
+    @Override
+    protected Iterable<String> getClientRunArgs() {
+        def result = ['--noCoreSearch']
+        def args = project.properties['runArgs']
+        if (args != null) {
+            result << args
+        }
+
+        result
     }
 
 }

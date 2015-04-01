@@ -22,35 +22,23 @@
  */
 package net.minecrell.vanilla.gradle
 
-import static net.minecraftforge.gradle.common.Constants.NATIVES_DIR
-import static net.minecraftforge.gradle.user.UserConstants.CONFIG_DEPS
-import static net.minecraftforge.gradle.user.UserConstants.CONFIG_MC
-import static net.minecraftforge.gradle.user.UserConstants.CONFIG_NATIVES
-import static net.minecraftforge.gradle.user.UserConstants.CONFIG_START
-import static net.minecraftforge.gradle.user.UserConstants.CONFIG_USERDEV
-
 import net.minecraftforge.gradle.GradleConfigurationException
 import net.minecraftforge.gradle.delayed.DelayedFile
-import net.minecraftforge.gradle.tasks.ExtractConfigTask
 import net.minecraftforge.gradle.tasks.ProcessJarTask
 import net.minecraftforge.gradle.user.UserBasePlugin
+import net.minecraftforge.gradle.user.UserExtension
+import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 
-class VanillaGradle extends UserBasePlugin<VanillaExtension> {
+abstract class AbstractVanillaPlugin<T extends UserExtension> extends UserBasePlugin<T> {
 
     // FML version used for downloading mappings
     private static final String FML_VERSION = '1.8-8.0.49.1047'
     private static final String CACHE_DIR = "{CACHE_DIR}/minecraft/net/minecrell/vanilla/$FML_VERSION"
 
-    @Override
-    protected Class<VanillaExtension> getExtensionClass() {
-        VanillaExtension
-    }
-
-    @Override
-    void applyPlugin() {
-        super.applyPlugin()
+    protected void applyJson(File file, String depConfig, String nativeConfig, Logger log) {
+        super.readAndApplyJson(file, depConfig, nativeConfig, log)
     }
 
     @Override
@@ -75,66 +63,6 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
     }
 
     @Override
-    protected void configureDeps() {
-        project.with {
-            configurations.create(CONFIG_USERDEV)
-            configurations.create(CONFIG_NATIVES)
-            configurations.create(CONFIG_START)
-            configurations.create(CONFIG_DEPS)
-            configurations.create(CONFIG_MC)
-
-            // Setup extractUserDev
-            task('extractUserDev', type: ExtractConfigTask) {
-                out = delayedFile '{USER_DEV}'
-                config = CONFIG_USERDEV
-                doesCache = true
-                dependsOn 'getVersionJson'
-                doLast {
-                    super.readAndApplyJson(devJson.call(), CONFIG_DEPS, CONFIG_NATIVES, it.logger)
-                }
-            }
-
-            tasks.getAssetsIndex.dependsOn 'extractUserDev'
-
-            // Setup extractNatives
-            task('extractNatives', type: ExtractConfigTask) {
-                out = delayedFile NATIVES_DIR
-                config = CONFIG_NATIVES
-                exclude 'META-INF/**', 'META-INF/**'
-                doesCache = true
-                dependsOn 'extractUserDev'
-            }
-
-            dependencies.add(CONFIG_START, files(delayedFile(startDir)))
-
-            // Extra libs folder
-            dependencies.add('compile', fileTree('libs'))
-
-            def deps = configurations.getByName(CONFIG_DEPS)
-            def mc = configurations.getByName(CONFIG_MC)
-            def start = configurations.getByName(CONFIG_START)
-
-            // Add Minecraft dependencies to classpath
-            sourceSets {
-                main {
-                    compileClasspath += deps
-                    compileClasspath += mc
-                    runtimeClasspath += start
-                }
-            }
-
-            eclipse.classpath.plusConfigurations += [deps, mc, start]
-
-            idea {
-                module {
-                    scopes.COMPILE.plus += [deps, mc]
-                    scopes.RUNTIME.plus += [start]
-                }
-            }
-        }
-    }
-
-    @Override
     String getApiName() {
         'minecraft_merged'
     }
@@ -155,27 +83,27 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
     }
 
     @Override
-    protected String getApiVersion(VanillaExtension ext) {
+    protected String getApiVersion(T ext) {
         null
     }
 
     @Override
-    protected String getMcVersion(VanillaExtension ext) {
+    protected String getMcVersion(T ext) {
         ext.version
     }
 
     @Override
-    protected String getApiCacheDir(VanillaExtension ext) {
+    protected String getApiCacheDir(T ext) {
         '{BUILD_DIR}/minecraft/net/minecraft/minecraft_merged/{MC_VERSION}'
     }
 
     @Override
-    protected String getSrgCacheDir(VanillaExtension vanillaExtension) {
+    protected String getSrgCacheDir(T vanillaExtension) {
         "$CACHE_DIR/srgs"
     }
 
     @Override
-    protected String getUserDevCacheDir(VanillaExtension vanillaExtension) {
+    protected String getUserDevCacheDir(T vanillaExtension) {
         "$CACHE_DIR/unpacked"
     }
 
@@ -185,40 +113,15 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
     }
 
     @Override
-    protected String getClientTweaker() {
-        project.minecraft.clientTweaker
-    }
-
-    @Override
-    protected String getServerTweaker() {
-        project.minecraft.serverTweaker
-    }
-
-    @Override
     protected String getStartDir() {
         '{BUILD_DIR}/start'
     }
 
     @Override
-    protected String getClientRunClass() {
-        'net.minecraft.launchwrapper.Launch'
-    }
-
-    @Override
     protected Iterable<String> getClientRunArgs() {
-        def result = ['--noCoreSearch']
-        def args = project.properties['runArgs']
-        if (args != null) {
-            result << args
-        }
-
-        result
+        []
     }
 
-    @Override
-    protected String getServerRunClass() {
-        'net.minecraft.launchwrapper.Launch'
-    }
 
     @Override
     protected Iterable<String> getServerRunArgs() {
@@ -246,9 +149,9 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
 
     @Override
     protected DelayedFile getDevJson() {
-        new LoadingDelayedFile(this, "$CACHE_DIR/unpacked/dev.json", { File file ->
-            if (file.exists()) {
-                def i = VanillaGradle.getResourceAsStream("/versions/${project.minecraft.version}.json")
+        new LoadingDelayedFile(this, "{USER_DEV}/${extension.version}.json", { File file ->
+            if (!file.exists()) {
+                def i = AbstractVanillaPlugin.getResourceAsStream("/versions/${extension.version}.json")
                 if (i != null) {
                     i.withStream {
                         file.withOutputStream { o ->
@@ -263,7 +166,7 @@ class VanillaGradle extends UserBasePlugin<VanillaExtension> {
     }
 
     @Override
-    protected VanillaExtension getOverlayExtension() {
+    protected T getOverlayExtension() {
         null
     }
 

@@ -150,7 +150,7 @@ abstract class AbstractVanillaPlugin<T extends UserExtension> extends UserBasePl
     @Override
     protected DelayedFile getDevJson() {
         new LoadingDelayedFile(this, "{USER_DEV}/${extension.version}.json", { File file ->
-            if (!file.exists()) {
+            if (!file.exists() && new File(file.parentFile, 'dev.json').exists()) {
                 def i = AbstractVanillaPlugin.getResourceAsStream("/versions/${extension.version}.json")
                 if (i != null) {
                     file.createNewFile()

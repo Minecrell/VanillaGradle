@@ -153,6 +153,7 @@ abstract class AbstractVanillaPlugin<T extends UserExtension> extends UserBasePl
             if (!file.exists()) {
                 def i = AbstractVanillaPlugin.getResourceAsStream("/versions/${extension.version}.json")
                 if (i != null) {
+                    file.createNewFile()
                     i.withStream {
                         file.withOutputStream { o ->
                             o << i

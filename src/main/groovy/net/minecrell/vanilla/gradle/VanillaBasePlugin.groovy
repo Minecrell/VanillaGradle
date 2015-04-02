@@ -77,6 +77,9 @@ class VanillaBasePlugin extends AbstractVanillaPlugin<UserExtension> {
                 }
             }
 
+            def main = sourceSets.main
+            tasks.javadoc.classpath = main.output + main.compileClasspath
+
             eclipse {
                 classpath {
                     plusConfigurations += [deps, mc]

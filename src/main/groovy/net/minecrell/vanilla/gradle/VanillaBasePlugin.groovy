@@ -64,11 +64,14 @@ class VanillaBasePlugin extends AbstractVanillaPlugin<UserExtension> {
                 dependsOn 'extractUserDev'
             }
 
-            // Extra libs folder
-            dependencies.add('compile', fileTree('libs'))
-
             def deps = configurations.getByName(CONFIG_DEPS)
             def mc = configurations.getByName(CONFIG_MC)
+
+            dependencies {
+                compile fileTree('libs')
+                testCompile deps
+                testCompile mc
+            }
 
             sourceSets {
                 main {

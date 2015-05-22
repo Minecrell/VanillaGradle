@@ -1,15 +1,18 @@
 plugins {
     id 'groovy'
-    id 'idea'
     id 'maven-publish'
+
+    id 'eclipse'
+    id 'idea'
+
     id 'com.github.hierynomus.license' version '0.11.0'
 }
 
 group = 'net.minecrell'
 version = '1.0.1-SNAPSHOT'
 
-sourceCompatibility = '1.6'
-targetCompatibility = '1.6'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 repositories {
     mavenCentral()
@@ -31,17 +34,16 @@ dependencies {
 
 license {
     header file('LICENSE')
-    exclude '**/*.txt'
-    exclude '**/*.json'
-    exclude '**/*.properties'
-    ignoreFailures false
+    include '**/*.java'
+    include '**/*.groovy'
+
     strictCheck true
     mapping {
         java = 'SLASHSTAR_STYLE'
     }
 }
 
-task sourcesJar(type: Jar) {
+task sourceJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
@@ -51,7 +53,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifact sourcesJar
+            artifact sourceJar
 
             repositories {
                 maven {
@@ -63,6 +65,5 @@ publishing {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.3'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    gradleVersion = '2.4'
 }

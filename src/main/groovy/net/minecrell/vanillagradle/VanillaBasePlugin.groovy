@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.minecrell.vanilla.gradle
+package net.minecrell.vanillagradle
 
 import static net.minecraftforge.gradle.common.Constants.NATIVES_DIR
 import static net.minecraftforge.gradle.user.UserConstants.CONFIG_DEPS

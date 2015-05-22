@@ -20,18 +20,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.minecrell.vanilla.gradle
+package net.minecrell.vanillagradle
 
-import net.minecraftforge.gradle.user.UserBasePlugin
-import net.minecraftforge.gradle.user.UserExtension
+class VanillaPlugin extends BaseVanillaPlugin<VanillaExtension> {
 
-class VanillaExtension extends UserExtension {
+    @Override
+    protected Class<VanillaExtension> getExtensionClass() {
+        VanillaExtension
+    }
 
-    String clientTweaker = ''
-    String serverTweaker = ''
+    @Override
+    protected String getClientTweaker() {
+        extension.clientTweaker
+    }
 
-    VanillaExtension(UserBasePlugin<? extends UserExtension> plugin) {
-        super(plugin)
+    @Override
+    protected String getServerTweaker() {
+        extension.serverTweaker
+    }
+
+    @Override
+    protected String getClientRunClass() {
+        'net.minecraft.launchwrapper.Launch'
+    }
+
+    @Override
+    protected String getServerRunClass() {
+        'net.minecraft.launchwrapper.Launch'
+    }
+
+    @Override
+    protected Iterable<String> getClientRunArgs() {
+        def result = ['--noCoreSearch']
+        def args = project.properties['runArgs']
+        if (args != null) {
+            result << args
+        }
+
+        result
     }
 
 }

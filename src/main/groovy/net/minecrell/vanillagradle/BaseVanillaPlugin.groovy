@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.minecrell.vanilla.gradle
+package net.minecrell.vanillagradle
 
 import net.minecraftforge.gradle.GradleConfigurationException
 import net.minecraftforge.gradle.delayed.DelayedFile

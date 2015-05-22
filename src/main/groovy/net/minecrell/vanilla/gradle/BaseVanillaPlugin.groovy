@@ -31,7 +31,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
 
-abstract class AbstractVanillaPlugin<T extends UserExtension> extends UserBasePlugin<T> {
+abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin<T> {
 
     // FML version used for downloading mappings
     private static final String FML_VERSION = '1.8-8.0.49.1047'
@@ -151,7 +151,7 @@ abstract class AbstractVanillaPlugin<T extends UserExtension> extends UserBasePl
     protected DelayedFile getDevJson() {
         new LoadingDelayedFile(this, "{USER_DEV}/${extension.version}.json", { File file ->
             if (!file.exists() && new File(file.parentFile, 'dev.json').exists()) {
-                def i = AbstractVanillaPlugin.getResourceAsStream("/versions/${extension.version}.json")
+                def i = BaseVanillaPlugin.getResourceAsStream("/versions/${extension.version}.json")
                 if (i != null) {
                     file.createNewFile()
                     i.withStream {

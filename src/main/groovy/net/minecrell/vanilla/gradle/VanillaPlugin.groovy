@@ -22,7 +22,7 @@
  */
 package net.minecrell.vanilla.gradle
 
-class VanillaPlugin extends AbstractVanillaPlugin<VanillaExtension> {
+class VanillaPlugin extends BaseVanillaPlugin<VanillaExtension> {
 
     @Override
     protected Class<VanillaExtension> getExtensionClass() {

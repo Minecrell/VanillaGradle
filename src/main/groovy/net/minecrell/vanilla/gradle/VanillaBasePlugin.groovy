@@ -32,7 +32,7 @@ import net.minecraftforge.gradle.tasks.ExtractConfigTask
 import net.minecraftforge.gradle.user.UserExtension
 import org.gradle.api.tasks.JavaExec
 
-class VanillaBasePlugin extends AbstractVanillaPlugin<UserExtension> {
+class VanillaBasePlugin extends BaseVanillaPlugin<UserExtension> {
 
     @Override
     protected void configureDeps() {

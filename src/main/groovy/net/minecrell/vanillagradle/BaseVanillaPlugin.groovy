@@ -24,9 +24,12 @@ package net.minecrell.vanillagradle
 
 import net.minecraftforge.gradle.GradleConfigurationException
 import net.minecraftforge.gradle.delayed.DelayedFile
+import net.minecraftforge.gradle.tasks.DecompileTask
 import net.minecraftforge.gradle.tasks.ProcessJarTask
 import net.minecraftforge.gradle.user.UserBasePlugin
+import net.minecraftforge.gradle.user.UserConstants
 import net.minecraftforge.gradle.user.UserExtension
+
 import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
@@ -46,6 +49,18 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
         project.with {
             ProcessJarTask binDeobf = tasks.deobfBinJar
             ProcessJarTask decompDeobf = tasks.deobfuscateJar
+            DecompileTask decompile = tasks.decompile
+
+            // bin jar
+            def binName = getBinDepName() + "_${project.name}-{MC_VERSION}.jar"
+            binDeobf.setOutDirtyJar(delayedFile("${UserConstants.DIRTY_DIR}/$binName"))
+
+            // srg jar
+            def srgName = "{API_NAME}_${project.name}-{MC_VERSION}-${UserConstants.CLASSIFIER_DEOBF_SRG}.jar"
+            decompDeobf.setOutDirtyJar(delayedFile("${UserConstants.DIRTY_DIR}/$srgName"))
+
+            // src jar
+            decompile.setOutJar(delayedDirtyFile(null, UserConstants.CLASSIFIER_DECOMPILED, "jar", false))
 
             JavaPluginConvention java = convention.plugins['java']
             SourceSet main = java.sourceSets.main
@@ -69,12 +84,12 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
 
     @Override
     protected String getSrcDepName() {
-        "minecraft_${project.name}_src"
+        "minecraft_merged_src"
     }
 
     @Override
     protected String getBinDepName() {
-        "minecraft_${project.name}_bin"
+        "minecraft_merged_bin"
     }
 
     @Override
@@ -94,7 +109,7 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
 
     @Override
     protected String getApiCacheDir(T ext) {
-        '{BUILD_DIR}/minecraft/net/minecraft/minecraft_merged/{MC_VERSION}'
+        '{CACHE_DIR}/minecraft/net/minecraft/minecraft_merged/{MC_VERSION}'
     }
 
     @Override
@@ -171,4 +186,27 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
         null
     }
 
+    @Override
+    DelayedFile delayedDirtyFile(String name, String classifier, String ext, boolean mappings) {
+        new DelayedDirtyFile(name, classifier, ext, mappings, project, "", this)
+    }
+
+    @Override
+    protected void setMinecraftDeps(boolean decomp, boolean remove) {
+        String version = this.getMcVersion((UserExtension)this.getExtension())
+
+        def name
+        if (decomp)
+            name = getSrcDepName()
+        else
+            name = getBinDepName()
+        if (!project.tasks.deobfuscateJar.isClean())
+            name += "_$project.name"
+
+        project.dependencies.add "minecraft", ["name":name, "version":version]
+        if(remove) {
+            project.configurations.minecraft.exclude(["module":name])
+        }
+
+    }
 }

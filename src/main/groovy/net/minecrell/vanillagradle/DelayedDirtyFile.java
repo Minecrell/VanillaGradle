@@ -24,11 +24,13 @@ package net.minecrell.vanillagradle;
 
 import net.minecraftforge.gradle.delayed.DelayedFile;
 import net.minecraftforge.gradle.tasks.ProcessJarTask;
+
 import org.gradle.api.Project;
 
 import java.io.File;
 
 // java class because I couldn't get groovy to behave
+@SuppressWarnings("serial")
 public class DelayedDirtyFile extends DelayedFile {
 
     private String name;
@@ -36,7 +38,7 @@ public class DelayedDirtyFile extends DelayedFile {
     private String ext;
     private boolean mappings;
 
-    public DelayedDirtyFile(String name, String classifier, String ext, boolean mappings, Project owner, String pattern, IDelayedResolver... resolvers) {
+    public DelayedDirtyFile(String name, String classifier, String ext, boolean mappings, Project owner, String pattern, IDelayedResolver<?>... resolvers) {
         super(owner, pattern, resolvers);
         this.name = name;
         this.classifier = classifier;
@@ -44,6 +46,7 @@ public class DelayedDirtyFile extends DelayedFile {
         this.mappings = mappings;
     }
 
+    @Override
     public File resolveDelayed() {
         ProcessJarTask decompDeobf = (ProcessJarTask) this.project.getTasks().getByName("deobfuscateJar");
         pattern = (decompDeobf.isClean() ? "{API_CACHE_DIR}/" + (mappings ? "{MAPPING_CHANNEL}/{MAPPING_VERSION}/" : "") : "{BUILD_DIR}/dirtyArtifacts") + "/";

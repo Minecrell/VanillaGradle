@@ -29,6 +29,7 @@ import net.minecraftforge.gradle.tasks.ProcessJarTask
 import net.minecraftforge.gradle.user.UserBasePlugin
 import net.minecraftforge.gradle.user.UserConstants
 import net.minecraftforge.gradle.user.UserExtension
+
 import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
@@ -51,7 +52,7 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
             DecompileTask decompile = tasks.decompile
 
             // bin jar
-            def binName = getBinDepName() + "_${project.name}-{MC_VERSION}.jar";
+            def binName = getBinDepName() + "_${project.name}-{MC_VERSION}.jar"
             binDeobf.setOutDirtyJar(delayedFile("${UserConstants.DIRTY_DIR}/$binName"))
 
             // srg jar
@@ -194,10 +195,10 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
     protected void setMinecraftDeps(boolean decomp, boolean remove) {
         String version = this.getMcVersion((UserExtension)this.getExtension())
 
-        def name;
+        def name
         if (decomp)
             name = getSrcDepName()
-         else
+        else
             name = getBinDepName()
         if (!project.tasks.deobfuscateJar.isClean())
             name += "_$project.name"

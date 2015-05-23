@@ -20,25 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.minecrell.vanillagradle
+package net.minecrell.vanillagradle.file;
 
-import net.minecraftforge.gradle.common.BaseExtension
-import net.minecraftforge.gradle.common.BasePlugin
-import net.minecraftforge.gradle.delayed.DelayedFile
+import net.minecraftforge.gradle.delayed.DelayedFile;
+import org.gradle.api.Project;
 
-class LoadingDelayedFile extends DelayedFile {
+public class DynamicDelayedFile extends DelayedFile {
 
-    private final Closure<File> loader
-
-    LoadingDelayedFile(BasePlugin<? extends BaseExtension> owner, String pattern, Closure<File> loader) {
-        super(owner.project, pattern, owner)
-        this.loader = loader
+    public DynamicDelayedFile(Project owner, String pattern, IDelayedResolver... resolvers) {
+        super(owner, pattern, resolvers);
     }
 
-    @Override
-    File resolveDelayed() {
-        def result = super.resolveDelayed()
-        loader.call result
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
 }

@@ -22,10 +22,8 @@
  */
 package net.minecrell.vanillagradle.file
 
-import net.minecraftforge.gradle.delayed.DelayedBase
-import net.minecraftforge.gradle.delayed.DelayedFile
-import net.minecraftforge.gradle.delayed.DelayedBase.IDelayedResolver
 import net.minecraftforge.gradle.tasks.ProcessJarTask
+import net.minecraftforge.gradle.delayed.DelayedBase.IDelayedResolver
 import org.gradle.api.Project
 
 class DelayedDirtyFile extends DynamicDelayedFile {

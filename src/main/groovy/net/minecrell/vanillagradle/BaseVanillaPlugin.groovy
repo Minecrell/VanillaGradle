@@ -41,7 +41,7 @@ import org.gradle.api.tasks.SourceSet
 abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin<T> {
 
     // FML version used for downloading mappings
-    private static final String FML_VERSION = '1.8-8.0.49.1047'
+    private static final String FML_VERSION = '1.8-8.0.127.1103'
     private static final String CACHE_DIR = "{CACHE_DIR}/minecraft/net/minecrell/vanilla/$FML_VERSION"
 
     protected void applyJson(File file, String depConfig, String nativeConfig, Logger log) {

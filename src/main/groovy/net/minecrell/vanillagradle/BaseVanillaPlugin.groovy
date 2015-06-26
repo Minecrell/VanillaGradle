@@ -32,8 +32,12 @@ import net.minecraftforge.gradle.tasks.ProcessJarTask
 import net.minecraftforge.gradle.user.UserBasePlugin
 import net.minecraftforge.gradle.user.UserConstants
 import net.minecraftforge.gradle.user.UserExtension
+
+import org.gradle.api.Project
+
 import net.minecrell.vanillagradle.file.DelayedDirtyFile
 import net.minecrell.vanillagradle.file.LoadingDelayedFile
+
 import org.gradle.api.logging.Logger
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.SourceSet
@@ -41,8 +45,12 @@ import org.gradle.api.tasks.SourceSet
 abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin<T> {
 
     // FML version used for downloading mappings
-    private static final String FML_VERSION = '1.8-8.0.127.1103'
-    private static final String CACHE_DIR = "{CACHE_DIR}/minecraft/net/minecrell/vanilla/$FML_VERSION"
+    private static final Map<String, String> FML_VERSIONS = [
+        '1.7.2' :'1.7.2-7.2.158.889', // because why not?
+        '1.7.10':'1.7.10-7.10.18.952',
+        '1.8'   :'1.8-8.0.127.1103'
+    ].asImmutable()
+    private static final String CACHE_DIR = "{CACHE_DIR}/minecraft/net/minecrell/vanilla/{FML_VERSION}"
 
     protected void applyJson(File file, String depConfig, String nativeConfig, Logger log) {
         super.readAndApplyJson(file, depConfig, nativeConfig, log)
@@ -126,9 +134,17 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
         "$CACHE_DIR/unpacked"
     }
 
+    private String getFmlVersion(String mcver) {
+        FML_VERSIONS.get(mcver)
+    }
+
     @Override
     protected String getUserDev() {
-        "net.minecraftforge:fml:$FML_VERSION"
+        def mcver = getMcVersion(extension)
+        def module = 'net.minecraftforge:fml'
+        if (mcver.startsWith('1.7'))
+            module = 'cpw.mods:fml'
+        "$module:{FML_VERSION}"
     }
 
     @Override
@@ -153,8 +169,8 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
 
     @Override
     protected void doVersionChecks(String version) {
-        if (version != '1.8')
-            throw new GradleConfigurationException('Only Minecraft 1.8 is supported currently')
+        if (!FML_VERSIONS.containsKey(version))
+            throw new GradleConfigurationException("Minecraft $version is not supported currently")
     }
 
     @Override
@@ -174,9 +190,7 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
                 if (i != null) {
                     file.createNewFile()
                     i.withStream {
-                        file.withOutputStream { o ->
-                            o << i
-                        }
+                        file.withOutputStream { o -> o << i }
                     }
                 }
             }
@@ -191,6 +205,10 @@ abstract class BaseVanillaPlugin<T extends UserExtension> extends UserBasePlugin
     }
 
     @Override
+    String resolve(String pattern, Project project, T exten) {
+        super.resolve(pattern, project, exten).replace('{FML_VERSION}', getFmlVersion(getMcVersion(exten)))
+    }
+
     DelayedFile delayedDirtyFile(String name, String classifier, String ext, boolean mappings) {
         new DelayedDirtyFile(name, classifier, ext, mappings, project, '', this)
     }

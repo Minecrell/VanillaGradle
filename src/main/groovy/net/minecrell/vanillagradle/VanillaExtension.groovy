@@ -29,6 +29,7 @@ class VanillaExtension extends UserExtension {
 
     String clientTweaker = ''
     String serverTweaker = ''
+    String launchWrapper = '1.12'
 
     VanillaExtension(UserBasePlugin<? extends UserExtension> plugin) {
         super(plugin)

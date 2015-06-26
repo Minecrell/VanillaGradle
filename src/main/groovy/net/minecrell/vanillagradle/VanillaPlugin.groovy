@@ -30,6 +30,16 @@ class VanillaPlugin extends BaseVanillaPlugin<VanillaExtension> {
     }
 
     @Override
+    protected void configureDeps() {
+        super.configureDeps()
+        if (extension.launchWrapper) {
+            project.dependencies {
+                minecraftDeps "net.minecraft:launchwrapper:$extension.launchWrapper"
+            }
+        }
+    }
+
+    @Override
     protected String getClientTweaker() {
         extension.clientTweaker
     }

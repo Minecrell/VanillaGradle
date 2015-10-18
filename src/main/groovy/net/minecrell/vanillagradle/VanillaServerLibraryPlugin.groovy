@@ -1,5 +1,5 @@
 /*
- * VanillaGradle - Temporary ForgeGradle extension for Vanilla libraries
+ * VanillaGradle - ForgeGradle extension for Vanilla libraries
  * Copyright (c) 2015, Minecrell <https://github.com/Minecrell>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy

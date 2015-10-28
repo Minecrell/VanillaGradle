@@ -62,5 +62,5 @@ publishing {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.8-rc-2'
+    gradleVersion = '2.8'
 }

@@ -136,4 +136,5 @@ class VanillaServerLibraryPlugin extends ServerTweaker {
     protected boolean hasServerRun() {
         return false
     }
+
 }

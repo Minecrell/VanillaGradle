@@ -11,10 +11,32 @@ plugins {
 }
 
 group = 'net.minecrell'
-version = '2.1-SNAPSHOT'
+version = '2.0.2_2'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
+
+configurations {
+    provided
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+
+eclipse {
+    classpath {
+        plusConfigurations += [configurations.provided]
+    }
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [configurations.provided]
+    }
+}
 
 repositories {
     jcenter()
@@ -26,7 +48,7 @@ repositories {
 
 dependencies {
     compile localGroovy()
-    compile 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    provided 'net.minecraftforge.gradle:ForgeGradle:2.0-20151205.212842-160'
 }
 
 license {

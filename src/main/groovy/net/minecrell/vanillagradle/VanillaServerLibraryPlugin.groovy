@@ -40,8 +40,8 @@ import org.gradle.api.tasks.bundling.Jar
 class VanillaServerLibraryPlugin extends ServerTweaker {
 
     @Override
-    protected void applyUserPlugin() {
-        super.applyUserPlugin()
+    protected void applyVanillaUserPlugin() {
+        super.applyVanillaUserPlugin()
         extension.tweakClass = 'null'
     }
 

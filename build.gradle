@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'net.minecrell'
-version = '2.0.2_2'
+version = '2.0.3-SNAPSHOT'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -39,15 +39,16 @@ idea {
 }
 
 repositories {
+    jcenter()
     maven {
-        name = 'plugins'
-        url = 'https://plugins.gradle.org/m2'
+        name = 'forge'
+        url = 'http://files.minecraftforge.net/maven'
     }
 }
 
 dependencies {
     compile localGroovy()
-    provided 'gradle.plugin.net.minecraftforge.gradle:ForgeGradle:2.0.2'
+    provided 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
 }
 
 license {

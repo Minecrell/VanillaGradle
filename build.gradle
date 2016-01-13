@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'net.minecrell'
-version = '2.0.3-SNAPSHOT'
+version = '2.0.3_1'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6

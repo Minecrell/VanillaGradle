@@ -37,7 +37,7 @@ import net.minecraftforge.gradle.user.tweakers.TweakerExtension
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.bundling.Jar
 
-class VanillaServerLibraryPlugin extends ServerTweaker {
+class VanillaServerPlugin extends ServerTweaker {
 
     @Override
     protected void applyVanillaUserPlugin() {

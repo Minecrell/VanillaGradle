@@ -6,37 +6,20 @@ plugins {
     id 'idea'
 
     id 'maven-publish'
+    id 'nebula.provided-base' version '3.1.0'
+    id 'com.gradle.plugin-publish' version '0.9.3'
 
-    id 'com.github.hierynomus.license' version '0.11.0'
+    id 'net.minecrell.licenser' version '0.2.1'
 }
 
 group = 'net.minecrell'
-version = '2.0.3_1'
+version = '2.2.0-1-SNAPSHOT'
+description = 'ForgeGradle 2 extension for Vanilla mods'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
 
-configurations {
-    provided
-}
-
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
-    }
-}
-
-eclipse {
-    classpath {
-        plusConfigurations += [configurations.provided]
-    }
-}
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [configurations.provided]
-    }
-}
+archivesBaseName = project.name.toLowerCase()
 
 repositories {
     jcenter()
@@ -48,23 +31,36 @@ repositories {
 
 dependencies {
     compile localGroovy()
-    provided 'net.minecraftforge.gradle:ForgeGradle:2.0-SNAPSHOT'
+    provided 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
 }
 
 license {
-    header file('LICENSE')
     include '**/*.java'
     include '**/*.groovy'
-
-    strictCheck true
-    mapping {
-        java = 'SLASHSTAR_STYLE'
-    }
 }
 
 task sourceJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+pluginBundle {
+    website = 'https://github.com/Minecrell/VanillaGradle'
+    vcsUrl = website
+    description = project.description
+    tags = ['minecraft', 'mcp', 'sponge']
+
+    plugins {
+        serverPlugin {
+            id = 'net.minecrell.vanillagradle.server'
+            displayName = 'VanillaGradle server plugin'
+            description = 'Provides a MCP workspace for the Vanilla server with all run tasks disabled'
+        }
+    }
+
+    mavenCoordinates {
+        artifactId = project.archivesBaseName
+    }
 }
 
 publishing {
@@ -84,5 +80,5 @@ publishing {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.10'
+    gradleVersion = '2.14.1'
 }

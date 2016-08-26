@@ -9,11 +9,3 @@ jdk:
 
 notifications:
   email: false
-
-env:
-  global:
-    - LAPIS_DEPLOY=https://github.com/LapisBlue/Deploy.git DEPLOY_ROOT=/tmp/lapis/deploy
-    - GIT_REPO=git@github.com:Minecrell/Repo.git
-    - secure: "yxnudscflCCC+6TvoFiwASnJXVnfsEbnqAexYN5WJsmo23pepowVrAxh7FwImGDI5thGDUqhjBwDCNarzyjLIKTUwlyrFjc5c6PiA3tzLa/T3mNYzrZ8gYAuCZGDGapX2SeIFaGD0qx0o5jr1kuPNcs4Z2v5niI5IoMHAlC9mwo="
-
-after_success: git clone $LAPIS_DEPLOY $DEPLOY_ROOT && $DEPLOY_ROOT/maven_repo "gradle publish"

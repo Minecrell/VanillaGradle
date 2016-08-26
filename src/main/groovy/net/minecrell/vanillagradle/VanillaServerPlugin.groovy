@@ -52,14 +52,14 @@ class VanillaServerPlugin extends ServerTweaker {
 
     @Override
     protected void afterEvaluate() {
-        boolean hasTweakClass = Strings.isNullOrEmpty(extension.tweakClass)
-        if (!hasTweakClass) {
+        boolean noTweakClass = Strings.isNullOrEmpty(extension.tweakClass)
+        if (noTweakClass) {
             extension.tweakClass = 'null'
         }
 
         super.afterEvaluate()
 
-        if (!hasTweakClass) {
+        if (noTweakClass) {
             Jar jar = (Jar) project.tasks.jar
             jar.manifest.attributes.remove 'TweakClass'
         }

@@ -20,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package net.minecrell.vanillagradle
 
 import static net.minecraftforge.gradle.common.Constants.CONFIG_MC_DEPS
@@ -32,6 +33,7 @@ import static net.minecraftforge.gradle.user.UserConstants.TASK_MAKE_START
 import static net.minecraftforge.gradle.user.UserConstants.TASK_SETUP_DECOMP
 import static net.minecraftforge.gradle.user.UserConstants.TASK_SETUP_DEV
 
+import com.google.common.base.Strings
 import net.minecraftforge.gradle.user.tweakers.ServerTweaker
 import net.minecraftforge.gradle.user.tweakers.TweakerExtension
 import org.gradle.api.tasks.JavaExec
@@ -40,17 +42,18 @@ import org.gradle.api.tasks.bundling.Jar
 class VanillaServerPlugin extends ServerTweaker {
 
     @Override
-    protected void applyVanillaUserPlugin() {
-        super.applyVanillaUserPlugin()
-        extension.tweakClass = 'null'
-    }
-
-    @Override
     protected void afterEvaluate() {
+        boolean hasTweakClass = Strings.isNullOrEmpty(extension.tweakClass)
+        if (!hasTweakClass) {
+            extension.tweakClass = 'null'
+        }
+
         super.afterEvaluate()
 
-        Jar jar = (Jar) project.tasks.jar
-        jar.manifest.attributes.remove 'TweakClass'
+        if (!hasTweakClass) {
+            Jar jar = (Jar) project.tasks.jar
+            jar.manifest.attributes.remove 'TweakClass'
+        }
 
         project.configurations.getByName(CONFIG_START).dependencies.clear()
     }
@@ -102,12 +105,12 @@ class VanillaServerPlugin extends ServerTweaker {
                     scopes.PROVIDED.plus.add(mc)
                     scopes.PROVIDED.plus.add(provided)
 
-                    // fix the idea bug
+                    // Fix the idea bug
                     inheritOutputDirs = true
                 }
             }
 
-            // add deobf task dependencies
+            // Add deobf task dependencies
             tasks.ideaModule.dependsOn TASK_DD_COMPILE, TASK_DD_PROVIDED
         }
     }

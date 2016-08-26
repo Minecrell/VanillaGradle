@@ -59,8 +59,8 @@ class VanillaServerPlugin extends ServerTweaker {
     }
 
     @Override
-    protected void makeDecompTasks(String globalPattern, String localPattern, Object inputJar, String inputTask, Object mcpPatchSet) {
-        super.makeDecompTasks(globalPattern, localPattern, inputJar, inputTask, mcpPatchSet)
+    protected void makeDecompTasks(String globalPattern, String localPattern, Object inputJar, String inputTask, Object mcpPatchSet, Object mcpInject) {
+        super.makeDecompTasks(globalPattern, localPattern, inputJar, inputTask, mcpPatchSet, mcpInject)
 
         project.with {
             tasks.getByName(TASK_SETUP_DEV).dependsOn.remove 'makeStart'

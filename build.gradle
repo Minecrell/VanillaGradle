@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'net.minecrell'
-version = '2.2.0-1-SNAPSHOT'
+version = '2.2-1-SNAPSHOT'
 description = 'ForgeGradle 2 extension for Vanilla mods'
 
 sourceCompatibility = '1.6'
@@ -66,6 +66,8 @@ pluginBundle {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId project.archivesBaseName
+
             from components.java
 
             artifact sourceJar

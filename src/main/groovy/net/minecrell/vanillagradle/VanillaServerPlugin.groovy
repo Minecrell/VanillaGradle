@@ -34,12 +34,21 @@ import static net.minecraftforge.gradle.user.UserConstants.TASK_SETUP_DECOMP
 import static net.minecraftforge.gradle.user.UserConstants.TASK_SETUP_DEV
 
 import com.google.common.base.Strings
+import net.minecraftforge.gradle.user.ReobfMappingType
+import net.minecraftforge.gradle.user.ReobfTaskFactory
 import net.minecraftforge.gradle.user.tweakers.ServerTweaker
 import net.minecraftforge.gradle.user.tweakers.TweakerExtension
 import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.bundling.Jar
 
 class VanillaServerPlugin extends ServerTweaker {
+
+    @Override
+    protected void setupReobf(ReobfTaskFactory.ReobfTaskWrapper reobf) {
+        super.setupReobf(reobf)
+        // Use SEARGE by default
+        reobf.setMappingType(ReobfMappingType.SEARGE)
+    }
 
     @Override
     protected void afterEvaluate() {

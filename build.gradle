@@ -56,6 +56,11 @@ pluginBundle {
             displayName = 'VanillaGradle server plugin'
             description = 'Provides a MCP workspace for the Vanilla server with all run tasks disabled'
         }
+        clientPlugin {
+            id = 'net.minecrell.vanillagradle.client'
+            displayName = 'VanillaGradle client plugin'
+            description = 'Provides a MCP workspace for the Vanilla client with all run tasks disabled'
+        }
     }
 
     mavenCoordinates {

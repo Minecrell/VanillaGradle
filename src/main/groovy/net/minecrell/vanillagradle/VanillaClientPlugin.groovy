@@ -23,36 +23,25 @@
 
 package net.minecrell.vanillagradle
 
-import static net.minecraftforge.gradle.common.Constants.CONFIG_MC_DEPS
-import static net.minecraftforge.gradle.common.Constants.CONFIG_MC_DEPS_CLIENT
-import static net.minecraftforge.gradle.common.Constants.JAR_SERVER_PURE
+import static net.minecraftforge.gradle.common.Constants.JAR_CLIENT_FRESH
 import static net.minecraftforge.gradle.common.Constants.MCP_INJECT
-import static net.minecraftforge.gradle.common.Constants.MCP_PATCHES_SERVER
-import static net.minecraftforge.gradle.common.Constants.TASK_SPLIT_SERVER
+import static net.minecraftforge.gradle.common.Constants.MCP_PATCHES_CLIENT
+import static net.minecraftforge.gradle.common.Constants.TASK_DL_CLIENT
 
 import groovy.transform.CompileStatic
 
 @CompileStatic
-class VanillaServerPlugin extends VanillaPlugin {
-
-    @Override
-    protected void applyVanillaUserPlugin() {
-        super.applyVanillaUserPlugin()
-
-        // Remove client dependencies
-        def config = project.configurations.getByName(CONFIG_MC_DEPS)
-        config.extendsFrom = config.extendsFrom - [project.configurations.getByName(CONFIG_MC_DEPS_CLIENT)]
-    }
+class VanillaClientPlugin extends VanillaPlugin {
 
     @Override
     protected String getJarName() {
-        "minecraft_server"
+        "minecraft"
     }
 
     @Override
     protected void createDecompTasks(String globalPattern, String localPattern) {
         makeDecompTasks(globalPattern, localPattern,
-                delayedFile(JAR_SERVER_PURE), TASK_SPLIT_SERVER, delayedFile(MCP_PATCHES_SERVER), delayedFile(MCP_INJECT))
+                delayedFile(JAR_CLIENT_FRESH), TASK_DL_CLIENT, delayedFile(MCP_PATCHES_CLIENT), delayedFile(MCP_INJECT))
     }
 
 }

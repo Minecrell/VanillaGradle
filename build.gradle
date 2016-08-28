@@ -13,7 +13,7 @@ plugins {
 }
 
 group = 'net.minecrell'
-version = '2.2-3'
+version = '2.2-4-SNAPSHOT'
 description = 'ForgeGradle 2 extension for Vanilla mods'
 
 sourceCompatibility = '1.6'

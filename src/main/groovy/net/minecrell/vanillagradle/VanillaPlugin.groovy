@@ -115,6 +115,9 @@ abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
                 scopes.PROVIDED.plus.add(mcDeps)
                 scopes.PROVIDED.plus.add(mc)
                 scopes.PROVIDED.plus.add(provided)
+
+                // Fix problems with resource files
+                inheritOutputDirs = true
             }
 
             // Add deobf task dependencies

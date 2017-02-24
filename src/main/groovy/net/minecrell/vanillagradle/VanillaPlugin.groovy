@@ -24,6 +24,8 @@
 package net.minecrell.vanillagradle
 
 import static net.minecraftforge.gradle.common.Constants.CONFIG_MC_DEPS
+import static net.minecraftforge.gradle.user.UserConstants.CONFIG_DC_RESOLVED
+import static net.minecraftforge.gradle.user.UserConstants.CONFIG_DP_RESOLVED
 import static net.minecraftforge.gradle.user.UserConstants.CONFIG_MC
 import static net.minecraftforge.gradle.user.UserConstants.CONFIG_PROVIDED
 import static net.minecraftforge.gradle.user.UserConstants.CONFIG_START
@@ -37,9 +39,10 @@ import net.minecraftforge.gradle.user.ReobfMappingType
 import net.minecraftforge.gradle.user.ReobfTaskFactory
 import net.minecraftforge.gradle.user.UserBaseExtension
 import net.minecraftforge.gradle.user.UserVanillaBasePlugin
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.tasks.JavaExec
-import org.gradle.plugins.ide.eclipse.model.EclipseModel
 import org.gradle.plugins.ide.idea.model.IdeaModel
 
 abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
@@ -83,38 +86,46 @@ abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
         }
     }
 
-    // Configure dependencies as provided
+    @Override
+    protected void configureCompilation() {
+        project.with {
+            Configuration[] mcConfigs = [
+                    configurations.getByName(CONFIG_MC),
+                    configurations.getByName(CONFIG_MC_DEPS),
+                    configurations.getByName(CONFIG_DC_RESOLVED),
+            ]
+            Configuration[] provided = [
+                    configurations.getByName(CONFIG_PROVIDED),
+                    configurations.getByName(CONFIG_DP_RESOLVED),
+            ]
+
+            // For compile we map all dependencies to PROVIDED
+            configurations.getByName(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).with {
+                extendsFrom(mcConfigs)
+                extendsFrom(provided)
+            }
+
+            // For the test, we map it to COMPILE (so it is available for tests)
+            configurations.getByName(JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME).extendsFrom(mcConfigs)
+            configurations.getByName(JavaPlugin.TEST_COMPILE_ONLY_CONFIGURATION_NAME).extendsFrom(provided)
+        }
+    }
 
     @Override
     protected void configureEclipse() {
-        project.with {
-            def mc = configurations.getByName(CONFIG_MC)
-            def mcDeps = configurations.getByName(CONFIG_MC_DEPS)
-            def provided = configurations.getByName(CONFIG_PROVIDED)
+        // Classpath should be handled by compileOnly configuration
 
-            def eclipse = (EclipseModel) eclipse
-            eclipse.classpath.plusConfigurations.add(mcDeps)
-            eclipse.classpath.plusConfigurations.add(mc)
-            eclipse.classpath.plusConfigurations.add(provided)
-
-            // Other dependencies
-            tasks.eclipseClasspath.dependsOn TASK_DD_COMPILE, TASK_DD_PROVIDED
-        }
+        // Other dependencies
+        project.tasks.eclipseClasspath.dependsOn TASK_DD_COMPILE, TASK_DD_PROVIDED
     }
 
     @Override
     protected void configureIntellij() {
         project.with {
-            def mc = configurations.getByName(CONFIG_MC)
-            def mcDeps = configurations.getByName(CONFIG_MC_DEPS)
-            def provided = configurations.getByName(CONFIG_PROVIDED)
-
-            ((IdeaModel) idea).module.with {
+            extensions.getByType(IdeaModel).module.with {
                 excludeDirs.addAll files('.gradle', 'build', '.idea', 'out').files
 
-                scopes.PROVIDED.plus.add(mcDeps)
-                scopes.PROVIDED.plus.add(mc)
-                scopes.PROVIDED.plus.add(provided)
+                // Classpath should be handled by compileOnly configuration
 
                 // Fix problems with resource files
                 inheritOutputDirs = true

@@ -49,6 +49,9 @@ abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
 
     @Override
     protected void applyVanillaUserPlugin() {
+        // Create dummy task for API source set
+        project.task('compileApiJava')
+
         // Scan resource directory for access transformers
         extension.atSource(((JavaPluginConvention) project.convention.plugins.java).sourceSets.main)
     }

@@ -60,6 +60,12 @@ pluginBundle {
             displayName = 'VanillaGradle client plugin'
             description = 'Provides a MCP workspace for the Vanilla client with all run tasks disabled'
         }
+
+        mergedPlugin {
+            id = 'net.minecrell.vanillagradle.merged'
+            displayName = 'VanillaGradle merged plugin'
+            description = 'Provides a MCP workspace with Vanilla client and server sources merged'
+        }
     }
 
     mavenCoordinates {

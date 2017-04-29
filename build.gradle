@@ -6,7 +6,6 @@ plugins {
     id 'idea'
 
     id 'maven-publish'
-    id 'nebula.provided-base' version '3.1.0'
     id 'com.gradle.plugin-publish' version '0.9.7'
 
     id 'net.minecrell.licenser' version '0.3'
@@ -31,7 +30,7 @@ repositories {
 
 dependencies {
     compile localGroovy()
-    provided 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    compileOnly 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
 }
 
 license {

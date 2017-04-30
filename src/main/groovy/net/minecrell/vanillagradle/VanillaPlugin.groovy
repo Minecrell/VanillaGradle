@@ -49,9 +49,6 @@ abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
 
     @Override
     protected void applyVanillaUserPlugin() {
-        // Create dummy task for API source set
-        project.task('compileApiJava')
-
         // Scan resource directory for access transformers
         extension.atSource(((JavaPluginConvention) project.convention.plugins.java).sourceSets.main)
     }
@@ -67,6 +64,11 @@ abstract class VanillaPlugin extends UserVanillaBasePlugin<UserBaseExtension> {
     @Override
     protected void afterEvaluate() {
         super.afterEvaluate()
+
+        // Create dummy task for API source set if it doesn't exist
+        if (project.tasks.findByName('compileApiJava') == null) {
+            project.task('compileApiJava')
+        }
 
         // Remove start dependency
         project.configurations.getByName(CONFIG_START).dependencies.clear()
